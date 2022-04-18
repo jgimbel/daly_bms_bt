@@ -109,6 +109,10 @@ class DalyBMSBluetooth(DalyBMS):
                 return
             responses.append(data[:13])
             responses.append(data[13:])
+        elif len(data) == 143:
+            responses.append(data[:13])
+            responses.append(data[13:26])
+            responses.append(data[26:39])
         else:
             self.logger.info("did not receive 13 or 26 bytes, not implemented bytes: %i" % len(data))
         for response_bytes in responses:
@@ -184,8 +188,9 @@ class DalyBMSBluetooth(DalyBMS):
         max_responses = self._calc_num_responses('cells', 3)
         if not max_responses:
             return
+        print(max_responses)
         response_data = await self._read_request("95", max_responses=max_responses)
-        return super().get_cell_voltages(response_data=response_data)
+        return await super().get_cell_voltages(response_data=response_data)
 
     async def get_temperatures(self):
         if not self.status:

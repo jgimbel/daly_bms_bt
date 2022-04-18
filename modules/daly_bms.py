@@ -151,7 +151,7 @@ class DalyBMS:
 #                self.logger.error("unkonwn status_field %s" % status_field)
 #                return False
 #        else:
-            # via UART/USB the BMS returns only frames that have data
+           # via UART/USB the BMS returns only frames that have data
         return math.ceil(self.status[status_field] / num_per_frame)
 
     def _split_frames(self, response_data, status_field, structure):
@@ -273,12 +273,12 @@ class DalyBMS:
         self.status = data
         return data
 
-    def get_cell_voltages(self, response_data=None):
+    async def get_cell_voltages(self, response_data=None):
         if not response_data:
             max_responses = self._calc_num_responses(status_field="cells", num_per_frame=3)
             if not max_responses:
                 return
-            response_data = self._read_request("95", max_responses=max_responses, return_list=True)
+            response_data = await self._read_request("95", max_responses=max_responses) #, return_list=True)
         if not response_data:
             return False
         cell_voltages = self._split_frames(response_data=response_data, status_field="cells", structure=">b 3h x")
