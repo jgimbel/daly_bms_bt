@@ -109,7 +109,7 @@ class DalyBMSBluetooth(DalyBMS):
                 return
             responses.append(data[:13])
             responses.append(data[13:])
-        elif len(data) == 143:
+        elif len(data) == 143 or len(data) == 140:
             responses.append(data[:13])
             responses.append(data[13:26])
             responses.append(data[26:39])

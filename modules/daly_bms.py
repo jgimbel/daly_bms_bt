@@ -336,7 +336,6 @@ class DalyBMS:
         cells = {}
         for cell in range(1, self.status["cells"] + 1):
             cells[cell] = bool(int(bits[cell * -1]))
-        self.logger.info(cells)
         # todo: get sample data and verify result
         return cells
 
