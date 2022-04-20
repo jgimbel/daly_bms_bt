@@ -22,6 +22,7 @@ class DalyBMSBluetooth(DalyBMS):
         self.response_cache = {}
         self.mac_address = mac_address
         self.logger.info("Set up Bleak client, adapter %s" % adapter) 
+        self.adapter = adapter
         self.client = BleakClient(self.mac_address, device=adapter, timeout=15)
 
     async def connect(self):
@@ -128,7 +129,13 @@ class DalyBMSBluetooth(DalyBMS):
     async def _async_char_write(self, command, value):
         if not self.client.is_connected:
             self.logger.info("Connecting...")
-            await self.client.connect()
+            while not self.client.is_connected:
+                try:
+                    await self.client.connect()
+                except:
+                    self.client = BleakClient(self.mac_address, device=self.adapter, timeout=15)
+                    await asyncio.sleep(10)
+
 
         await self.client.write_gatt_char(15, value)
         self.logger.debug("Waiting...")
